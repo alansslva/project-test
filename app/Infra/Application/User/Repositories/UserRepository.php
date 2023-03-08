@@ -19,7 +19,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function getAll(UserDtoInterface $userDto) : array
     {
-        $users = $this->model->get();
+        $users = $this->model->with(['transactionsIn', 'transactionsOut'])->get();
 
         $response = [];
         foreach ($users as $user){

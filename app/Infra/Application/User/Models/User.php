@@ -3,6 +3,7 @@
 namespace App\Infra\Application\User\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -41,4 +42,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function transactionsIn()
+    {
+        return $this->hasMany(Transaction::class, 'user_to_id');
+    }
+
+    public function transactionsOut()
+    {
+        return $this->hasMany(Transaction::class, 'user_from_id');
+    }
 }
