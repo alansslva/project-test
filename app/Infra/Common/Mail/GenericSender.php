@@ -2,23 +2,31 @@
 
 namespace App\Infra\Common\Mail;
 
+use App\Infra\Common\Http\Http;
 use App\Infra\Common\Mail\Interfaces\SenderInterface;
 
-class GenericSender implements SenderInterface
+class GenericSender extends Http implements SenderInterface
 {
+
+    protected string $recipient;
+    protected string $message;
 
     public function setRecipient(string $recipient): void
     {
-        // TODO: Implement setRecipient() method.
+      $this->recipient = $recipient;
     }
 
     public function setMessage(string $message): void
     {
-        // TODO: Implement setMessage() method.
+        $this->message = $message;
     }
 
     public function sendMessage(): bool
     {
-        // TODO: Implement sendMessage() method.
+        $response =  json_decode($this->get('http://o4d9z.mocklab.io/notify'), true);
+        if($response['message'] == 'Success')
+            return true;
+
+        return false;
     }
 }

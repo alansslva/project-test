@@ -50,6 +50,18 @@ class MovementService implements MovementServiceInterface
             throw new NotAuthorizedException();
     }
 
+    private function doTransactions() : bool
+    {
+        DB::transaction(function (){
+            $this->userRepository->updateValue($this->transaction->getUserFrom());
+            $this->userRepository->updateValue($this->transaction->getUserTo());
+            $this->transactionRepository->store($this->transaction);
+            $this->adapterHandlerEmail->getAdapter()->sendMessage();
+        });
+
+        return true;
+    }
+
     public function execute()
     {
 
@@ -57,16 +69,16 @@ class MovementService implements MovementServiceInterface
         $this->checkAuthorization();
 
 
-        $this->transaction->getUserFrom()->setValue( $this->transaction->getUserFrom()->getValue() - $this->transaction->getValue() );
-        $this->transaction->getUserTo()->setValue( $this->transaction->getUserTo()->getValue() + (float) $this->transaction->getValue() );
+        $this->transaction
+            ->getUserFrom()
+            ->setValue( $this->transaction->getUserFrom()->getValue() - $this->transaction->getValue() );
+
+        $this->transaction
+            ->getUserTo()
+            ->setValue( $this->transaction->getUserTo()->getValue() + (float) $this->transaction->getValue() );
 
 
-        DB::transaction(function (){
-            $this->userRepository->updateValue($this->transaction->getUserFrom());
-            $this->userRepository->updateValue($this->transaction->getUserTo());
-            $this->transactionRepository->store($this->transaction);
-        });
-
+        $this->doTransactions();
 
     }
 }
