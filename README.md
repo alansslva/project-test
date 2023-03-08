@@ -39,6 +39,9 @@
 2. Os testes podem ser encontrados na pasta /tests na raiz do projeto
 3. Para executa-los utilizar o comando `docker exec -it project-php ./vendor/bin/phpunit`
 
+## Adapters
+
+Os serviços de email e autorização se encontram na pasta Infra com uma classe quee os retorna como o default adapter daquela açãoe os mesmos podem receber uma nova implementação de sua mesma interface e realizar a troca no sistema através do retorno do adapter
 
 ## Utilização
 

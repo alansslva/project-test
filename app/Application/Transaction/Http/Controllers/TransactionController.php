@@ -9,6 +9,10 @@ use App\Domain\Application\Transaction\Repositories\TransactionRepository;
 use App\Domain\Application\Transaction\Services\MovementService;
 use App\Infra\Application\User\Models\User;
 use App\Infra\Application\User\Repositories\UserRepository;
+use App\Infra\Common\AuthorizationTransaction\AuthorizationAdapter;
+use App\Infra\Common\AuthorizationTransaction\GenericAuthorizationTransaction;
+use App\Infra\Common\Mail\EmailAdapter;
+use App\Infra\Common\Mail\GenericSender;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -26,7 +30,9 @@ class TransactionController extends Controller
         (new MovementService(
             $transaction,
             new TransactionRepository(new TransactionModel()),
-            new UserRepository(new User())
+            new UserRepository(new User()),
+            new EmailAdapter(),
+            new AuthorizationAdapter()
         ))->execute();
     }
 }
