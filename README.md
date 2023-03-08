@@ -3,7 +3,12 @@
 ## Instalação
 
 1. É necessario possuir docker.io e docker-compose instalados
--Comandos docker
+* `docker network create project-network`
+* `docker compose up -d`
+* `docker exec -it project-php cp .env.example .env`
+* `docker exec -it project-php composer install`
+* `docker exec -it project-php php artisan key:generate`
+* `docker exec -it project-php php artisan migrate`
 
 ## Pontos de atenção
 
