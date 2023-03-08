@@ -21,7 +21,7 @@ class UserDefaultDto implements UserDtoInterface
             'value' => $user->value,
             'transactions_in' => [],
             'transactions_out' => [],
-            'initial_value' => $user->value - $user->transactionsOut->sum('value')
+            'initial_value' => (float) $user->value - (float) $user->transactionsOut->sum('value') + (float) $user->transactionsOut->sum('value')
         ];
 
         foreach ($transactionsIn as $transaction){
