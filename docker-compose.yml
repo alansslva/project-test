@@ -1,0 +1,74 @@
+---
+version: '2'
+
+networks:
+  project-network:
+    external:
+      name: project-network
+
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: ./.common/docker/nginx/Dockerfile
+    image: project-web
+    container_name: project-web
+    ports:
+      - '80'
+    links:
+      - php
+    depends_on:
+      - php
+    networks:
+      - project-network
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www
+      - type: bind
+        source: ./.common/docker/php/conf.d/error_reporting.ini
+        target: /usr/local/etc/php/conf.d/error_reporting.ini
+  php:
+    build:
+      context: ./
+      dockerfile: ./.common/docker/php/Dockerfile
+    image: project-php
+    container_name: project-php
+    links:
+      - db
+    expose:
+      - 9000
+    networks:
+      - project-network
+    environment:
+      HOST: api-db
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www
+      - type: bind
+        source: ./.common/docker/php/conf.d/error_reporting.ini
+        target: /usr/local/etc/php/conf.d/error_reporting.ini
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    container_name: api-db
+    volumes:
+      - type: volume
+        source: mysqldb
+        target: /var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: project_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
+    ports:
+      - '3306:3306'
+    networks:
+      - project-network
+volumes:
+  mysqldb:
