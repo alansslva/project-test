@@ -12,8 +12,6 @@ class UserDefaultDto implements UserDtoInterface
         $transactionsIn = $user->transactionsIn->toArray();
         $transactionsOut = $user->transactionsOut->toArray();
 
-
-
         $data = [
             'id' => $user->id,
             'name' => $user->name,
